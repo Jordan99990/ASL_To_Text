@@ -1,15 +1,9 @@
 import streamlit as st
 import cv2
 import numpy as np
-from fastai.vision.all import load_learner, PILImage, Resize, aug_transforms, Normalize, imagenet_stats
+from fastai.vision.all import load_learner, PILImage
 from PIL import Image
 import mediapipe as mp
-
-label_to_letter = {
-    0: 'A', 1: 'B', 2: 'C', 3: 'D', 4: 'E', 5: 'F', 6: 'G', 7: 'H', 8: 'I',
-    10: 'K', 11: 'L', 12: 'M', 13: 'N', 14: 'O', 15: 'P', 16: 'Q', 17: 'R', 18: 'S', 19: 'T',
-    20: 'U', 21: 'V', 22: 'W', 23: 'X', 24: 'Y'
-}
 
 st.title("Webcam Live Feed for Sign Language Recognition")
 run = st.checkbox('Run')
@@ -17,14 +11,32 @@ FRAME_WINDOW = st.image([])
 CROPPED_HAND_WINDOW = st.image([]) 
 PREDICTION_TEXT = st.empty()
 
-model_path = './models/sign_language_model.pkl'
-learner = load_learner(model_path)
+model_path = './models/sign_language_model_v1.pkl'
+
+try:
+    learner = load_learner(model_path)
+except Exception as e:
+    st.error(f"Error loading model: {e}")
+    st.stop()
 
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(min_detection_confidence=0.7, min_tracking_confidence=0.5)
 mp_draw = mp.solutions.drawing_utils
 
 cap = cv2.VideoCapture(0, cv2.CAP_V4L2)
+
+def preprocess_image(hand_img):
+    hand_img_pil = Image.fromarray(cv2.cvtColor(hand_img, cv2.COLOR_BGR2RGB)).resize((224, 224))
+    hand_img_fastai = PILImage.create(hand_img_pil)
+    return hand_img_fastai
+
+def predict_hand_sign(image):
+    try:
+        pred, _, probs = learner.predict(image)
+        return str(pred) 
+    except Exception as e:
+        st.error(f"Prediction error: {e}")
+        return 'Error'
 
 while run:
     ret, frame = cap.read()
@@ -57,16 +69,12 @@ while run:
             hand_img = frame[y_min:y_max, x_min:x_max]
             
             if hand_img.size > 0:
-                hand_img_pil = Image.fromarray(cv2.cvtColor(hand_img, cv2.COLOR_BGR2RGB)).resize((128, 128))
-                
-                hand_img_fastai = PILImage.create(hand_img_pil)
-                
-                pred, _, probs = learner.predict(hand_img_fastai)
-                predicted_letter = label_to_letter.get(int(pred), 'Unknown')
+                hand_img_fastai = preprocess_image(hand_img)
+                predicted_label = predict_hand_sign(hand_img_fastai)
                 
                 FRAME_WINDOW.image(frame)
-                CROPPED_HAND_WINDOW.image(hand_img_pil)  
-                PREDICTION_TEXT.text(f"Predicted Letter: {predicted_letter}")
+                CROPPED_HAND_WINDOW.image(hand_img_fastai)
+                PREDICTION_TEXT.text(f"Predicted Label: {predicted_label}")
             else:
                 FRAME_WINDOW.image(frame)
                 PREDICTION_TEXT.text("Hand cropped image is empty")
