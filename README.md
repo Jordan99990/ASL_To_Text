@@ -1,10 +1,10 @@
-<h1 style="text-align: center;">
+<h1 style="align: center">
 
 ASL Alphabet Recognition
 
 </h1>
 
-<p style="text-align: justify;">
+<p style="align: justify">
 
 This project aims to recognize American Sign Language (ASL) alphabet using deep learning techniques.
 
@@ -12,7 +12,7 @@ This project aims to recognize American Sign Language (ASL) alphabet using deep 
 
 ## Description
 
-<p style="text-align: justify;">
+<p style="align: justify">
 
 The project preprocesses images of hands showing ASL signs and uses Fastai models to classify them. <br>
 It uses Streamlit for the web interface, Mediapipe to recognize hands, and OpenCV to crop the bounding box of the hand. <br>
@@ -24,14 +24,14 @@ The dataset used is the <a href="https://www.kaggle.com/datasets/grassknoted/asl
 
 ### Model V1
 
-<p style="text-align: justify;">
+<p style="justify">
 
 **Architecture**:
   - Uses a pre-trained ResNet34 model from the Fastai library.
   - The final layers are customized to fit the number of ASL alphabet classes.
 </p>
 
-<p style="text-align: justify;">
+<p style="align: justify">
 
 **Training**:
   - The dataset is split into training and validation sets using a random splitter with 20% validation data.
@@ -44,14 +44,14 @@ The dataset used is the <a href="https://www.kaggle.com/datasets/grassknoted/asl
 
 ### Model V2
 
-<p style="text-align: justify;">
+<p style="align: justify">
 
 **Architecture**:
   - Uses a pre-trained ResNet50 model from the Fastai library.
   - The final layers are customized to fit the number of ASL alphabet classes.
 </p>
 
-<p style="text-align: justify;">
+<p style="align: justify">
 
 **Training**:
   - The dataset is split into training and validation sets using a random splitter with 20% validation data.
