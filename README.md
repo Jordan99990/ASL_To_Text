@@ -59,5 +59,8 @@ The dataset used is the <a href="https://www.kaggle.com/datasets/grassknoted/asl
 </p>
 
 ## Screenshots
+<p align="center">
 
 ![img](./img/1.png)
+
+</p>
