@@ -1,15 +1,47 @@
-import streamlit as st
-import cv2
-import numpy as np
 from fastai.vision.all import load_learner, PILImage
 from PIL import Image
 import mediapipe as mp
+import streamlit as st
+import cv2
 
-st.title("Webcam Live Feed for Sign Language Recognition")
-run = st.checkbox('Run')
-FRAME_WINDOW = st.image([])
-CROPPED_HAND_WINDOW = st.image([]) 
-PREDICTION_TEXT = st.empty()
+st.set_page_config(
+    page_title="Sign Language Recognition",
+    page_icon="✌️",
+    layout="centered",
+    initial_sidebar_state="expanded",
+)
+
+st.markdown("<h1 style='text-align: center;'>Webcam Live Feed for Sign Language Recognition</h1>", unsafe_allow_html=True)
+
+model_options = {
+    "Model v1": "./models/sign_language_model_v1.pkl",
+    "Model v2": "./models/sign_language_model_v2.pkl",
+}
+
+if 'selected_model' not in st.session_state:
+    st.session_state.selected_model = list(model_options.keys())[0]
+
+selected_model = st.selectbox("Select Model", list(model_options.keys()), index=list(model_options.keys()).index(st.session_state.selected_model))
+
+if selected_model != st.session_state.selected_model:
+    st.session_state.selected_model = selected_model
+    st.session_state.run = True
+
+_, _, col3 = st.columns([1, 1, 2.6])
+with col3:
+    run = st.button("Run")
+    
+_, col_frame, _ = st.columns([0.5, 2.5, 0.5])
+with col_frame:
+    FRAME_WINDOW = st.image([])
+
+_, col_cropped, _ = st.columns([1, 1, 1])
+with col_cropped:
+    CROPPED_HAND_WINDOW = st.image([])
+
+_, col_pred, _ = st.columns([1, 1, 1])
+with col_pred:
+    PREDICTION_TEXT = st.empty()
 
 model_path = './models/sign_language_model_v1.pkl'
 
