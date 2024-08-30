@@ -1,15 +1,23 @@
-<h1 style="text-align: center;">ASL Alphabet Recognition</h1>
+<h1 style="text-align: center;">
+
+ASL Alphabet Recognition
+
+</h1>
 
 <p style="text-align: justify;">
+
 This project aims to recognize American Sign Language (ASL) alphabet using deep learning techniques.
+
 </p>
 
 ## Description
 
 <p style="text-align: justify;">
+
 The project preprocesses images of hands showing ASL signs and uses Fastai models to classify them. <br>
 It uses Streamlit for the web interface, Mediapipe to recognize hands, and OpenCV to crop the bounding box of the hand. <br>
 The dataset used is the <a href="https://www.kaggle.com/datasets/grassknoted/asl-alphabet">ASL Alphabet dataset</a>.
+
 </p>
 
 ## Model Architecture
